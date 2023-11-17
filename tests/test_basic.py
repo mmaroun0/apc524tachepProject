@@ -4,11 +4,6 @@ from numpy import random as rand
 
 import pytest
 
-"""
-To test run:
-pytest
-"""
-
 @pytest.fixture
 def true_grid_seed_0():
     '''
