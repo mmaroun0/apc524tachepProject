@@ -11,3 +11,12 @@ requires-python = ">=3.8"
 test = [
     "pytest",
 ]
+
+[tool.ruff]
+select = [
+    "E","F", "W",
+    "B",
+    "I",
+    "RUF",
+    "UP",
+]
