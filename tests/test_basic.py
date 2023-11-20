@@ -1,12 +1,12 @@
 import ising2D
 import numpy as np
+import pytest
 from numpy import random as rand
 
-import pytest
 
 @pytest.fixture
 def true_grid_seed_0():
-    '''
+    """
     Baseline for ising2D
 
     pytest fixture that is the correct 3x3 grid when np.rand.seed is set to 0
@@ -14,19 +14,21 @@ def true_grid_seed_0():
 
     Notice that if the number of rand calls changes in ising2D's __init__, a
     new baseline true_grid_seed_0 may need to be created.
-    '''
-    return np.array([[-1,1,1],[-1,1,1],[1,1,1]])
+    """
+    return np.array([[-1, 1, 1], [-1, 1, 1], [1, 1, 1]])
+
 
 @pytest.fixture
 def true_next_grid_seed_0():
-    '''
+    """
     Baseline for ising2D
 
     The correct grid that results from calling met2DIsing on true_grid_seed_0
     when rand.seed was set to 0 just before calling met2DIsing. This may also
     need to be changed depending on when rand is called in the source code.
-    '''
-    return np.array([[1,1,1],[-1,1,1],[-1,-1,1]])
+    """
+    return np.array([[1, 1, 1], [-1, 1, 1], [-1, -1, 1]])
+
 
 @pytest.fixture
 def true_grid_10_met_sweeps_seed_0():
@@ -64,10 +66,11 @@ def test_init(true_grid_seed_0):
     temp = 5.0
     rand.seed(0)
 
-    model = ising2D.ising2D(grid_size,temp)
+    model = ising2D.ising2D(grid_size, temp)
     assert grid_size == model.grid_size
     assert model.temperature == pytest.approx(temp)
     assert (model.grid == true_grid_seed_0).all()
+
 
 def test_metropolis(true_next_grid_seed_0):
     """
@@ -81,7 +84,7 @@ def test_metropolis(true_next_grid_seed_0):
     temp = 5.0
     rand.seed(0)
 
-    model = ising2D.ising2D(grid_size,temp)
+    model = ising2D.ising2D(grid_size, temp)
     rand.seed(0)
     next_grid, next_gross_mags = model.metropolis()
     assert (next_grid == true_next_grid_seed_0).all()
