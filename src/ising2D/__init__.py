@@ -12,13 +12,19 @@ class ising2D:
         self.algorithm = "metropolis"
 
     def metropolis(self):
-        for ndx in range(self.grid_size**2):
-            flip_ndx_row = rand.randint(0,np.size(self.grid,0))
-            flip_ndx_col = rand.randint(0,np.size(self.grid,1))
-            delta_e = 2*self.grid[flip_ndx_row,flip_ndx_col]*(self.grid[(flip_ndx_row+1)%self.grid_size,flip_ndx_col]+\
-                                                        self.grid[flip_ndx_row,(flip_ndx_col+1)%self.grid_size]+\
-                                                        self.grid[(flip_ndx_row-1)%self.grid_size,flip_ndx_col]+\
-                                                        self.grid[flip_ndx_row,(flip_ndx_col-1)%self.grid_size])
+        for _ndx in range(self.grid_size**2):
+            flip_ndx_row = rand.randint(0, np.size(self.grid, 0))
+            flip_ndx_col = rand.randint(0, np.size(self.grid, 1))
+            delta_e = (
+                2
+                * self.grid[flip_ndx_row, flip_ndx_col]
+                * (
+                    self.grid[(flip_ndx_row + 1) % self.grid_size, flip_ndx_col]
+                    + self.grid[flip_ndx_row, (flip_ndx_col + 1) % self.grid_size]
+                    + self.grid[(flip_ndx_row - 1) % self.grid_size, flip_ndx_col]
+                    + self.grid[flip_ndx_row, (flip_ndx_col - 1) % self.grid_size]
+                )
+            )
 
             the_seed = rand.rand()
             if delta_e < 0 or the_seed < np.exp(-delta_e / self.temperature):
@@ -27,13 +33,18 @@ class ising2D:
                 ]
             gross_mags = int(np.sum(np.sum(self.grid)))
         return self.grid, gross_mags
-  
-    def alg_sweep(self,num_iter):
-        net_mags = np.zeros([num_iter,],dtype=float)
-        if self.algorithm == 'metropolis':
+
+    def alg_sweep(self, num_iter):
+        net_mags = np.zeros(
+            [
+                num_iter,
+            ],
+            dtype=float,
+        )
+        if self.algorithm == "metropolis":
             for ndx in range(num_iter):
                 self.grid, gross_mags = self.metropolis()
-                net_mags[ndx] = gross_mags/(self.grid_size)**2
+                net_mags[ndx] = gross_mags / (self.grid_size) ** 2
             return self.grid, net_mags
         else:
             raise Exception("Incompatible algorithm. Exiting")
