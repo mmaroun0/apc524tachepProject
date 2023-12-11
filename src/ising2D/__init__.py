@@ -1,4 +1,7 @@
+from __future__ import annotations
+
 import numpy as np
+import numpy.typing as typing
 from numpy import random as rand
 
 
@@ -11,7 +14,7 @@ class ising2D:
         )
         self.algorithm = "metropolis"
 
-    def metropolis(self):
+    def metropolis(self) -> tuple[typing.NDArray[np.int64], int]:
         for _ndx in range(self.grid_size**2):
             flip_ndx_row = rand.randint(0, np.size(self.grid, 0))
             flip_ndx_col = rand.randint(0, np.size(self.grid, 1))
@@ -34,7 +37,9 @@ class ising2D:
             gross_mags = int(np.sum(np.sum(self.grid)))
         return self.grid, gross_mags
 
-    def alg_sweep(self, num_iter):
+    def alg_sweep(
+        self, num_iter: int
+    ) -> tuple[typing.NDArray[np.int64], typing.NDArray[np.float64]]:
         net_mags = np.zeros(
             [
                 num_iter,
