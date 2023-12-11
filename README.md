@@ -4,6 +4,11 @@
 
 - There is lots to change here; this package is the inital commit as of 14 November 2023
 
-- To run the tests, make sure you have installed optional dependencies (via `pip install ising2D.["test"]`), and then run `pytest`
+- To run the tests, make sure you have installed test optional dependencies (via `pip install ising2D.["test"]`), and then run `pytest`
 
 - Before each commit, run `pre-commit run -a` to check the formatting.
+
+- To generate new html docuemtnation, do the following:
+    - Make sure you installed docs optional dependencies (via `pip install ising2D.["docs"]`)
+    - `cd docs`
+    - `make html`
