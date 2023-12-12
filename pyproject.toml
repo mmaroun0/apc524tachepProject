@@ -12,6 +12,9 @@ test = [
     "pytest",
     "numpy",
 ]
+docs = [
+    "sphinx",
+]
 
 [tool.ruff]
 select = [
