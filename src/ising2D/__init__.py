@@ -6,6 +6,10 @@ from numpy import random as rand
 
 
 class ising2D:
+    """
+    This is the ising2D class docstring
+    """
+
     def __init__(self, grid_size: int, temp: float):
         self.grid_size = grid_size
         self.temperature = temp
@@ -15,6 +19,9 @@ class ising2D:
         self.algorithm = "metropolis"
 
     def metropolis(self) -> tuple[typing.NDArray[np.int64], int]:
+        """
+        Metropolis method docstring - to be written
+        """
         for _ndx in range(self.grid_size**2):
             flip_ndx_row = rand.randint(0, np.size(self.grid, 0))
             flip_ndx_col = rand.randint(0, np.size(self.grid, 1))
@@ -40,6 +47,9 @@ class ising2D:
     def alg_sweep(
         self, num_iter: int
     ) -> tuple[typing.NDArray[np.int64], typing.NDArray[np.float64]]:
+        """
+        alg_sweep method docstring - to be written
+        """
         net_mags = np.zeros(
             [
                 num_iter,
