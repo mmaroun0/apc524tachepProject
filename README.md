@@ -8,7 +8,7 @@
 
 - Before each commit, run `pre-commit run -a` to check the formatting.
 
-- To generate new html docuemtnation, do the following:
+- To generate new html documentation, do the following:
     - Make sure you installed docs optional dependencies (via `pip install ising2D.["docs"]`)
     - `cd docs`
     - `make html`
