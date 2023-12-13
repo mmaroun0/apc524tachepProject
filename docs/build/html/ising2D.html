@@ -11,6 +11,7 @@
     <script src="_static/documentation_options.js?v=2709fde1"></script>
     <script src="_static/doctools.js?v=888ff710"></script>
     <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="prev" title="Welcome to ising2D’s documentation!" href="index.html" />
@@ -35,16 +36,45 @@
 <dl class="py class">
 <dt class="sig sig-object py" id="ising2D.ising2D">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">ising2D.</span></span><span class="sig-name descname"><span class="pre">ising2D</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">grid_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">temp</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#ising2D.ising2D" title="Link to this definition">¶</a></dt>
-<dd><p>This is the ising2D class docstring</p>
+<dd><p>The ising2D class allows users to set up a square grid of initially randomized
+spins representing a 2D Ising model. Note that the class changes state when
+simulation methods are called, so it will not remain random.
+It is initialized by two parameters:</p>
+<dl class="simple">
+<dt>Inputs:</dt><dd><p>grid_size: (int) The number of spin sites along each edge of the square grid
+temp: (float) The temperature of the system, in units of kT/J</p>
+</dd>
+</dl>
 <dl class="py method">
 <dt class="sig sig-object py" id="ising2D.ising2D.alg_sweep">
 <span class="sig-name descname"><span class="pre">alg_sweep</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">int64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">float64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ising2D.ising2D.alg_sweep" title="Link to this definition">¶</a></dt>
-<dd></dd></dl>
+<dd><p>Runs <code class="docutils literal notranslate"><span class="pre">num_iter</span></code> iterations of the class instance’s chosen algorithm
+(<code class="docutils literal notranslate"><span class="pre">self.algorithm</span></code>) sequentially and records the net magnetization at each
+iteration.</p>
+<dl>
+<dt>Inputs:</dt><dd><p>num_iter: (int) The number of iterations to run the simulation forward</p>
+</dd>
+<dt>Returns a tuple:</dt><dd><p>1. (numpy array) The state of the grid after <cite>num_iter</cite> simulation
+algorithm iterations</p>
+<p>2. (numpy array) A numpy array of length <cite>num_iter</cite> containing the net
+magnetization of the grid after each simulation algorithm iteration</p>
+</dd>
+</dl>
+</dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="ising2D.ising2D.metropolis">
 <span class="sig-name descname"><span class="pre">metropolis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">dtype</span><span class="p"><span class="pre">[</span></span><span class="pre">int64</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#ising2D.ising2D.metropolis" title="Link to this definition">¶</a></dt>
-<dd><p>This is the metropolis method docstring. Look how pretty!</p>
+<dd><p>Runs one iteration of the Metropolis simulation algorithm on the grid.
+Here, one iteration means that <code class="docutils literal notranslate"><span class="pre">grid_size</span></code><span class="math notranslate nohighlight">\(^2\)</span> sites are randomly
+chosen and considered for a potential spin flip.</p>
+<dl class="simple">
+<dt>Returns a tuple:</dt><dd><ol class="arabic simple">
+<li><p>(numpy array) The state of the grid after one Metropolis iteration</p></li>
+<li><p>(float) The sum of spin directions over the whole grid</p></li>
+</ol>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

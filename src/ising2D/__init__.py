@@ -7,7 +7,14 @@ from numpy import random as rand
 
 class ising2D:
     """
-    This is the ising2D class docstring
+    The ising2D class allows users to set up a square grid of initially randomized
+    spins representing a 2D Ising model. Note that the class changes state when
+    simulation methods are called, so it will not remain random.
+    It is initialized by two parameters:
+
+    Inputs:
+        grid_size: (int) The number of spin sites along each edge of the square grid
+        temp: (float) The temperature of the system, in units of kT/J
     """
 
     def __init__(self, grid_size: int, temp: float):
@@ -20,7 +27,13 @@ class ising2D:
 
     def metropolis(self) -> tuple[typing.NDArray[np.int64], int]:
         """
-        Metropolis method docstring - to be written
+        Runs one iteration of the Metropolis simulation algorithm on the grid.
+        Here, one iteration means that ``grid_size``:math:`^2` sites are randomly
+        chosen and considered for a potential spin flip.
+
+        Returns a tuple:
+            1. (numpy array) The state of the grid after one Metropolis iteration
+            2. (float) The sum of spin directions over the whole grid
         """
         for _ndx in range(self.grid_size**2):
             flip_ndx_row = rand.randint(0, np.size(self.grid, 0))
@@ -48,7 +61,19 @@ class ising2D:
         self, num_iter: int
     ) -> tuple[typing.NDArray[np.int64], typing.NDArray[np.float64]]:
         """
-        alg_sweep method docstring - to be written
+        Runs ``num_iter`` iterations of the class instance's chosen algorithm
+        (``self.algorithm``) sequentially and records the net magnetization at each
+        iteration.
+
+        Inputs:
+            num_iter: (int) The number of iterations to run the simulation forward
+
+        Returns a tuple:
+            1. (numpy array) The state of the grid after `num_iter` simulation
+            algorithm iterations
+
+            2. (numpy array) A numpy array of length `num_iter` containing the net
+            magnetization of the grid after each simulation algorithm iteration
         """
         net_mags = np.zeros(
             [
@@ -62,4 +87,4 @@ class ising2D:
                 net_mags[ndx] = gross_mags / (self.grid_size) ** 2
             return self.grid, net_mags
         else:
-            raise Exception("Incompatible algorithm. Exiting")
+            raise Exception(f"Incompatible algorithm {self.algorithm}. Exiting")
