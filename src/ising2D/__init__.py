@@ -14,7 +14,7 @@ class ising2D:
 
     Inputs:
         grid_size: (int) The number of spin sites along each edge of the square grid
-        temp: (float) The temperature of the system
+        temp: (float) The temperature of the system, in units of kT/J
     """
 
     def __init__(self, grid_size: int, temp: float):
