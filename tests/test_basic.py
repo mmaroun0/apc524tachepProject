@@ -77,6 +77,24 @@ def test_init(true_grid_seed_0):
     assert (model.grid == true_grid_seed_0).all()
 
 
+def test_unknown_algorithm():
+    """
+    Test for ising2D
+
+    Test that if the Monte Carlo algorithm specified for the class is not in the
+    list of known algorithms, then the proper Exception is raised upon trying to
+    instantiate the class.
+    """
+    grid_size = 3
+    temp = 5.0
+    algorithm = "foo"
+    rand.seed(0)
+
+    with pytest.raises(Exception) as excinfo:
+        ising2D.ising2D(grid_size, temp, algorithm)
+    assert "Incompatible algorithm" in str(excinfo.value)
+
+
 def test_metropolis(true_next_grid_seed_0):
     """
     Test for ising2D
