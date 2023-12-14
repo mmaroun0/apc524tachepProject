@@ -4,7 +4,6 @@ import numpy as np
 import numpy.typing as typing
 from numpy import random as rand
 
-
 class ising2D:
     """
     The ising2D class allows users to set up a square grid of initially randomized
@@ -23,7 +22,10 @@ class ising2D:
         self.grid = rand.choice(
             [i for i in range(-1, 2) if i != 0], size=(grid_size, grid_size)
         )
-        self.algorithm = algorithm
+        if algorithm not in ["metropolis"]:
+            raise Exception(f"Incompatible algorithm {algorithm}. Exiting")
+        else:
+            self.algorithm = algorithm
 
     def metropolis(self) -> tuple[typing.NDArray[np.int64], int]:
         """
@@ -54,7 +56,7 @@ class ising2D:
                 self.grid[flip_ndx_row, flip_ndx_col] = -self.grid[
                     flip_ndx_row, flip_ndx_col
                 ]
-            gross_mags = int(np.sum(np.sum(self.grid)))
+        gross_mags = int(np.sum(np.sum(self.grid)))
         return self.grid, gross_mags
 
     def alg_sweep(
@@ -85,6 +87,4 @@ class ising2D:
             for ndx in range(num_iter):
                 self.grid, gross_mags = self.metropolis()
                 net_mags[ndx] = gross_mags / (self.grid_size) ** 2
-            return self.grid, net_mags
-        else:
-            raise Exception(f"Incompatible algorithm {self.algorithm}. Exiting")
+        return self.grid, net_mags
