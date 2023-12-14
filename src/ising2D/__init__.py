@@ -1,8 +1,39 @@
 from __future__ import annotations
 
+import numba
 import numpy as np
 import numpy.typing as typing
 from numpy import random as rand
+
+
+@numba.jit(
+    numba.types.Tuple(numba.int64[:, :], numba.int64)(
+        numba.int64[:, :], numba.int, numba.float
+    ),
+    nopython=True,
+    nogils=True,
+    inline="always",
+)
+def metropolis_numba(grid, grid_size, temperature):
+    for _ndx in range(grid_size**2):
+        flip_ndx_row = rand.randint(0, np.size(grid, 0))
+        flip_ndx_col = rand.randint(0, np.size(grid, 1))
+        delta_e = (
+            2
+            * grid[flip_ndx_row, flip_ndx_col]
+            * (
+                grid[(flip_ndx_row + 1) % grid_size, flip_ndx_col]
+                + grid[flip_ndx_row, (flip_ndx_col + 1) % grid_size]
+                + grid[(flip_ndx_row - 1) % grid_size, flip_ndx_col]
+                + grid[flip_ndx_row, (flip_ndx_col - 1) % grid_size]
+            )
+        )
+
+        the_seed = rand.rand()
+        if delta_e < 0 or the_seed < np.exp(-delta_e / temperature):
+            grid[flip_ndx_row, flip_ndx_col] = -grid[flip_ndx_row, flip_ndx_col]
+    gross_mags = int(np.sum(np.sum(grid)))
+    return grid, gross_mags
 
 
 class ising2D:
@@ -35,26 +66,9 @@ class ising2D:
             1. (numpy array) The state of the grid after one Metropolis iteration
             2. (int) The sum of spin directions over the whole grid
         """
-        for _ndx in range(self.grid_size**2):
-            flip_ndx_row = rand.randint(0, np.size(self.grid, 0))
-            flip_ndx_col = rand.randint(0, np.size(self.grid, 1))
-            delta_e = (
-                2
-                * self.grid[flip_ndx_row, flip_ndx_col]
-                * (
-                    self.grid[(flip_ndx_row + 1) % self.grid_size, flip_ndx_col]
-                    + self.grid[flip_ndx_row, (flip_ndx_col + 1) % self.grid_size]
-                    + self.grid[(flip_ndx_row - 1) % self.grid_size, flip_ndx_col]
-                    + self.grid[flip_ndx_row, (flip_ndx_col - 1) % self.grid_size]
-                )
-            )
-
-            the_seed = rand.rand()
-            if delta_e < 0 or the_seed < np.exp(-delta_e / self.temperature):
-                self.grid[flip_ndx_row, flip_ndx_col] = -self.grid[
-                    flip_ndx_row, flip_ndx_col
-                ]
-            gross_mags = int(np.sum(np.sum(self.grid)))
+        self.grid, gross_mags = metropolis_numba(
+            self.grid, self.grid_size, self.temperature
+        )
         return self.grid, gross_mags
 
     def alg_sweep(
