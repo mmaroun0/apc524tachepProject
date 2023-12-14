@@ -68,9 +68,10 @@ def test_init(true_grid_seed_0):
     """
     grid_size = 3
     temp = 5.0
+    algorithm = "metropolis"
     rand.seed(0)
 
-    model = ising2D.ising2D(grid_size, temp)
+    model = ising2D.ising2D(grid_size, temp, algorithm)
     assert grid_size == model.grid_size
     assert model.temperature == pytest.approx(temp)
     assert (model.grid == true_grid_seed_0).all()
@@ -86,9 +87,10 @@ def test_metropolis(true_next_grid_seed_0):
     """
     grid_size = 3
     temp = 5.0
+    algorithm = "metropolis"
     rand.seed(0)
 
-    model = ising2D.ising2D(grid_size, temp)
+    model = ising2D.ising2D(grid_size, temp, algorithm)
     rand.seed(0)
     next_grid, next_gross_mags = model.metropolis()
     assert (next_grid == true_next_grid_seed_0).all()
@@ -109,10 +111,11 @@ def test_metropolis_sweep(
     """
     grid_size = 3
     temp = 5.0
+    algorithm = "metropolis"
     num_iter = 10
     rand.seed(0)
 
-    model = ising2D.ising2D(grid_size, temp)
+    model = ising2D.ising2D(grid_size, temp, algorithm)
     new_grid, net_mags = model.alg_sweep(num_iter)
     assert (new_grid == true_grid_10_met_sweeps_seed_0).all()
     assert (net_mags == true_net_mags_10_met_sweeps_seed_0).all()

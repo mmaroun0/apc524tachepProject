@@ -17,13 +17,13 @@ class ising2D:
         temp: (float) The temperature of the system, in units of kT/J
     """
 
-    def __init__(self, grid_size: int, temp: float):
+    def __init__(self, grid_size: int, temp: float, algorithm: str):
         self.grid_size = grid_size
         self.temperature = temp
         self.grid = rand.choice(
             [i for i in range(-1, 2) if i != 0], size=(grid_size, grid_size)
         )
-        self.algorithm = "metropolis"
+        self.algorithm = algorithm
 
     def metropolis(self) -> tuple[typing.NDArray[np.int64], int]:
         """
@@ -33,7 +33,7 @@ class ising2D:
 
         Returns a tuple:
             1. (numpy array) The state of the grid after one Metropolis iteration
-            2. (float) The sum of spin directions over the whole grid
+            2. (int) The sum of spin directions over the whole grid
         """
         for _ndx in range(self.grid_size**2):
             flip_ndx_row = rand.randint(0, np.size(self.grid, 0))
