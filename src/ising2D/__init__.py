@@ -4,6 +4,7 @@ import numpy as np
 import numpy.typing as typing
 from numpy import random as rand
 
+
 class ising2D:
     """
     The ising2D class allows users to set up a square grid of initially randomized
