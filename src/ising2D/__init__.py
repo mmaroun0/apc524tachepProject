@@ -13,6 +13,24 @@ from numpy import random as rand
 def metropolis_grid(
     grid: typing.NDArray[np.int64], grid_size: int, temperature: float, test: bool
 ) -> typing.NDArray[np.int64]:
+    """
+    Perform ``grid_size``:math:`^2` potential spin flips, where the choice of sites
+    and decision of whether or not to flip is based on the Metropolis algorithm. This
+    function is accelerated with numba's just-in-time compiler for performance.
+
+    Parameters:
+        grid (NDArray[int]): 2D array of energy states representing the system
+
+        grid_size (int): Length of one side of the grid
+
+        temperature (float): Temperature of the system in k*T/J
+
+        test (bool): Marks if function is running in pytest - users should always set
+        to False
+
+    Returns:
+        grid (NDArray[int]): 2D array of states representing the system post-simulation
+    """
     if test:
         rand.seed(0)
     for _ndx in range(grid_size**2):
@@ -43,8 +61,11 @@ class ising2D:
     It is initialized by two parameters:
 
     Inputs:
-        grid_size: (int) The number of spin sites along each edge of the square grid
-        temp: (float) The temperature of the system, in units of kT/J
+        grid_size (int): The number of spin sites along each edge of the square grid
+
+        temp (float): The temperature of the system, in units of kT/J
+
+        algorithm (str): The algorithm to use. Options are ["metropolis"]
     """
 
     def __init__(self, grid_size: int, temp: float, algorithm: str):
@@ -64,8 +85,13 @@ class ising2D:
         Here, one iteration means that ``grid_size``:math:`^2` sites are randomly
         chosen and considered for a potential spin flip.
 
+        Parameters:
+            test (bool): Marks if function is running in pytest - users should always
+            set to False
+
         Returns a tuple:
             1. (numpy array) The state of the grid after one Metropolis iteration
+
             2. (int) The sum of spin directions over the whole grid
         """
         self.grid = metropolis_grid(self.grid, self.grid_size, self.temperature, test)
@@ -81,7 +107,10 @@ class ising2D:
         iteration.
 
         Inputs:
-            num_iter: (int) The number of iterations to run the simulation forward
+            num_iter (int): The number of iterations to run the simulation forward
+
+            test (bool): Marks if function is running in pytest - users should always
+            set to False
 
         Returns a tuple:
             1. (numpy array) The state of the grid after `num_iter` simulation
