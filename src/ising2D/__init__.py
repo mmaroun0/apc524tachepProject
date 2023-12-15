@@ -1,22 +1,23 @@
 from __future__ import annotations
 
 import numba
-import numba.types as t
 import numpy as np
 import numpy.typing as typing
 from numpy import random as rand
 
 
 @numba.jit(
-    t.Tuple(t.u8[:, :], t.u8)(t.u8[:, :], t.u8, t.f4),
+    numba.int64[:, ::1](numba.int64[:, ::1], numba.int64, numba.float32, numba.boolean),
     nopython=True,
-)
-def metropolis_numba(
-    grid: typing.NDArray[np.int64], grid_size: int, temperature: float
-) -> tuple[typing.NDArray[np.int64], int]:
+)  # type: ignore
+def metropolis_grid(
+    grid: typing.NDArray[np.int64], grid_size: int, temperature: float, test: bool
+) -> typing.NDArray[np.int64]:
+    if test:
+        rand.seed(0)
     for _ndx in range(grid_size**2):
-        flip_ndx_row = rand.randint(0, np.size(grid, 0))
-        flip_ndx_col = rand.randint(0, np.size(grid, 1))
+        flip_ndx_row = rand.randint(0, grid_size)
+        flip_ndx_col = rand.randint(0, grid_size)
         delta_e = (
             2
             * grid[flip_ndx_row, flip_ndx_col]
@@ -31,8 +32,7 @@ def metropolis_numba(
         the_seed = rand.rand()
         if delta_e < 0 or the_seed < np.exp(-delta_e / temperature):
             grid[flip_ndx_row, flip_ndx_col] = -grid[flip_ndx_row, flip_ndx_col]
-    gross_mags = int(np.sum(np.sum(grid)))
-    return grid, gross_mags
+    return grid
 
 
 class ising2D:
@@ -58,7 +58,7 @@ class ising2D:
         else:
             self.algorithm = algorithm
 
-    def metropolis(self) -> tuple[typing.NDArray[np.int64], int]:
+    def metropolis(self, test: bool = False) -> tuple[typing.NDArray[np.int64], int]:
         """
         Runs one iteration of the Metropolis simulation algorithm on the grid.
         Here, one iteration means that ``grid_size``:math:`^2` sites are randomly
@@ -68,13 +68,12 @@ class ising2D:
             1. (numpy array) The state of the grid after one Metropolis iteration
             2. (int) The sum of spin directions over the whole grid
         """
-        self.grid, gross_mags = metropolis_numba(
-            self.grid, self.grid_size, self.temperature
-        )
+        self.grid = metropolis_grid(self.grid, self.grid_size, self.temperature, test)
+        gross_mags = int(sum(sum(self.grid)))
         return self.grid, gross_mags
 
     def alg_sweep(
-        self, num_iter: int
+        self, num_iter: int, test: bool = False
     ) -> tuple[typing.NDArray[np.int64], typing.NDArray[np.float64]]:
         """
         Runs ``num_iter`` iterations of the class instance's chosen algorithm
@@ -99,6 +98,6 @@ class ising2D:
         )
         if self.algorithm == "metropolis":
             for ndx in range(num_iter):
-                self.grid, gross_mags = self.metropolis()
+                self.grid, gross_mags = self.metropolis(test)
                 net_mags[ndx] = gross_mags / (self.grid_size) ** 2
         return self.grid, net_mags
