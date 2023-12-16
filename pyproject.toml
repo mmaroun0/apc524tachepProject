@@ -28,5 +28,5 @@ select = [
 ]
 
 [[tool.mypy.overrides]]
-module = ["numba.*",]
+module = ["numba.*","matplotlib.*"]
 ignore_missing_imports = true
