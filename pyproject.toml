@@ -11,6 +11,7 @@ requires-python = ">=3.8"
 test = [
     "pytest",
     "numpy",
+    "numba",
     "matplotlib",
 ]
 docs = [
@@ -25,3 +26,7 @@ select = [
     "RUF",
     "UP",
 ]
+
+[[tool.mypy.overrides]]
+module = ["numba.*",]
+ignore_missing_imports = true
