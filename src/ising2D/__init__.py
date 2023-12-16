@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import matplotlib.pyplot as plt
 import numba
 import numpy as np
 import numpy.typing as typing
+from matplotlib.figure import Figure
 from numpy import random as rand
 
 
@@ -18,18 +20,22 @@ def metropolis_grid(
     and decision of whether or not to flip is based on the Metropolis algorithm. This
     function is accelerated with numba's just-in-time compiler for performance.
 
+    Performs Metropolis Algorithm:
+        Calculates a change in energy: delta_e.
+        If lower than 0, the state changes to the new energy.
+        If greater than 0, the state is changed with the probability of
+            e^-(delta_e/temperature).
+
     Parameters:
-        grid (NDArray[int]): 2D array of energy states representing the system
-
-        grid_size (int): Length of one side of the grid
-
-        temperature (float): Temperature of the system in k*T/J
-
-        test (bool): Marks if function is running in pytest - users should always set
+        1. grid (NDArray[int]): 2D array of energy states representing the system
+        2. grid_size (int): Length of one side of the grid
+        3. temperature (float): Temperature of the system in k*T/J
+        4. test (bool): Marks if function is running in pytest - users should always set
         to False
 
     Returns:
-        grid (NDArray[int]): 2D array of states representing the system post-simulation
+        1. grid (NDArray[int]): 2D array of states representing the system
+        post-simulation
     """
     if test:
         rand.seed(0)
@@ -55,17 +61,16 @@ def metropolis_grid(
 
 class ising2D:
     """
-    The ising2D class allows users to set up a square grid of initially randomized
-    spins representing a 2D Ising model. Note that the class changes state when
-    simulation methods are called, so it will not remain random.
+    The ising2D class allows users to create a square grid of initially randomized
+    spins representing a 2D Ising system. Note that the class changes states when
+    simulation methods are called, brining the system to equilibrium under enough
+    iterations. Plotting of the net magnetization and grid are also included.
     It is initialized by two parameters:
 
     Inputs:
-        grid_size (int): The number of spin sites along each edge of the square grid
-
-        temp (float): The temperature of the system, in units of kT/J
-
-        algorithm (str): The algorithm to use. Options are ["metropolis"]
+        1. grid_size (int): The number of spin sites along each edge of the square grid
+        2. temp (float): The temperature of the system, in units of kT/J
+        3. algorithm (str): The algorithm to use. Options are ["metropolis"]
     """
 
     def __init__(self, grid_size: int, temp: float, algorithm: str):
@@ -86,13 +91,12 @@ class ising2D:
         chosen and considered for a potential spin flip.
 
         Parameters:
-            test (bool): Marks if function is running in pytest - users should always
+            1. test (bool): Marks if function is running in pytest - users should always
             set to False
 
         Returns a tuple:
-            1. (numpy array) The state of the grid after one Metropolis iteration
-
-            2. (int) The sum of spin directions over the whole grid
+            1. grid (numpy array): The state of the grid after one Metropolis iteration
+            2. gross_mags (int): The sum of spin directions over the whole grid
         """
         self.grid = metropolis_grid(self.grid, self.grid_size, self.temperature, test)
         gross_mags = int(sum(sum(self.grid)))
@@ -107,17 +111,15 @@ class ising2D:
         iteration.
 
         Inputs:
-            num_iter (int): The number of iterations to run the simulation forward
-
-            test (bool): Marks if function is running in pytest - users should always
+            1. num_iter (int): The number of iterations to run the simulation
+            2. test (bool): Marks if function is running in pytest - users should always
             set to False
 
         Returns a tuple:
-            1. (numpy array) The state of the grid after `num_iter` simulation
+            1. grid (numpy array) The state of the grid after `num_iter` simulation
             algorithm iterations
-
-            2. (numpy array) A numpy array of length `num_iter` containing the net
-            magnetization of the grid after each simulation algorithm iteration
+            2. net_mags (numpy array) A numpy array of length `num_iter` containing the
+            net magnetization of the grid after each simulation algorithm iteration
         """
         net_mags = np.zeros(
             [
@@ -130,3 +132,51 @@ class ising2D:
                 self.grid, gross_mags = self.metropolis(test)
                 net_mags[ndx] = gross_mags / (self.grid_size) ** 2
         return self.grid, net_mags
+
+    def plot_net_mags(
+        self,
+        net_mags: typing.NDArray[np.int64],
+        filename: str,
+    ) -> Figure:
+        """
+        Creates 1D plot of net magnetization per time.
+
+        Parameters:
+            1. num_iter (int): Total number of times the algorithm repeated.
+            2. net_mags (NDArray[float]): Array of magnetization of the entire system
+            for each time.
+            3. filename (string): name of file, must include file type extension.
+            4. title (string): title of plot located at top center of figure.
+        """
+        if filename == "":
+            raise Exception("Filename required. Exiting")
+        else:
+            numIter = np.size(net_mags)
+            t = np.linspace(0, numIter, numIter)
+            fig = plt.figure()
+            plt.plot(t, net_mags, figure=fig)
+            plt.xlabel("Time [MC Sweeps]", figure=fig)
+            plt.ylabel("Magnitude", figure=fig)
+            plt.title(
+                "Net Magnetization vs. Time of 2D Ising Model Simulation", figure=fig
+            )
+            fig.savefig(filename)
+            return fig
+
+    def plot_grid(self, filename: str) -> Figure:
+        """
+        Creates 2D plot of system grid.
+
+        Parameters:
+            1. filename (string): name of file, must include file type extension.
+            2. title (string): title of plot located at top center of figure.
+        """
+        if filename == "":
+            raise Exception("Filename required. Exiting")
+        else:
+            fig = plt.figure()
+            plt.imshow(self.grid, figure=fig)
+            plt.title("Simulation of 2d Ising Model", figure=fig)
+            plt.colorbar()
+            fig.savefig(filename)
+            return fig

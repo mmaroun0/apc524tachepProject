@@ -153,3 +153,51 @@ def test_metropolis_sweep(
     new_grid, net_mags = model.alg_sweep(num_iter, test=True)
     assert (new_grid == true_grid_15_met_sweeps_seed_0).all()
     assert net_mags == pytest.approx(true_net_mags_15_met_sweeps_seed_0)
+
+
+@pytest.mark.mpl_image_compare(
+    baseline_dir="baseline", filename="test_net_mags_plot.png"
+)
+def test_net_mags_plot():
+    """
+    Test for ising2D
+
+    In this test, the net magnetization figure is tested against a baseline figure.
+    If baseline figure need to be generated, run "pytest --mpl-generate-path=baseline"
+    without the arguments in the above mlp_image_compare.
+    Otherwise, run "pytest --mpl" to allow access to the baseline
+    """
+    grid_size = 3
+    temp = 5.0
+    algorithm = "metropolis"
+    num_iter = 15
+    rand.seed(0)
+
+    model = ising2D.ising2D(grid_size, temp, algorithm)
+    new_grid, new_net_mags = model.alg_sweep(num_iter, test=True)
+    new_fig = model.plot_net_mags(new_net_mags, "test_net_mags_plot.png")
+
+    return new_fig
+
+
+@pytest.mark.mpl_image_compare(baseline_dir="baseline", filename="test_grid_plot.png")
+def test_grid_plot():
+    """
+    Test for ising2D
+
+    In this test, the net magnetization figure is tested against a baseline figure.
+    If baseline figure need to be generated, run "pytest --mpl-generate-path=baseline"
+    without the arguments in the above mlp_image_compare.
+    Otherwise, run "pytest --mpl" to allow access to the baseline
+    """
+    grid_size = 3
+    temp = 5.0
+    algorithm = "metropolis"
+    num_iter = 15
+    rand.seed(0)
+
+    model = ising2D.ising2D(grid_size, temp, algorithm)
+    new_grid, new_net_mags = model.alg_sweep(num_iter, test=True)
+    new_fig = model.plot_grid("test_grid.png")
+
+    return new_fig

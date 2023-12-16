@@ -12,6 +12,7 @@ test = [
     "pytest",
     "numpy",
     "numba",
+    "matplotlib",
 ]
 docs = [
     "sphinx",

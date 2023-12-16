@@ -29,5 +29,5 @@ repos:
     hooks:
       - id: mypy
         files: src
-        additional_dependencies: [numpy, numba]
+        additional_dependencies: [numpy, numba, matplotlib]
         args: [--show-error-codes, --strict, --pretty]
