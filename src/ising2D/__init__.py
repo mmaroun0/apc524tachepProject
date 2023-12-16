@@ -19,6 +19,7 @@ def metropolis_grid(
     Perform ``grid_size``:math:`^2` potential spin flips, where the choice of sites
     and decision of whether or not to flip is based on the Metropolis algorithm. This
     function is accelerated with numba's just-in-time compiler for performance.
+
     Performs Metropolis Algorithm:
         Calculates a change in energy: delta_e.
         If lower than 0, the state changes to the new energy.
